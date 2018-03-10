@@ -1,17 +1,24 @@
 class CommentsController < ApplicationController
-  before_action :check_authorization!
+  before_action :authenticate_user!
+ protect_from_forgery
+  
   def create
-    @comment = Comment.new
-    @comment.user_id = params[:user_id]
-    @comment.post_id = params[:post_id]
-    @comment.content = params[:content]
-    @comment.save
-    redirect_to '/posts/show/#{@comment.id}'
+    @comments = Comment.new
+    @comments.user_id= params[:comment_user_id]
+    @comments.post_id = params[:comment_post_id]
+    @comments.content = params[:comment_content]
+    @comments.save
+   
+    redirect_to "/posts/show/#{@comments.post_id}"
+    
+    
   end
+  
+
 
   def destroy
-    @comment = Comment.where(id: params[:id])
-    @comment.destroy
-    redirect_to '/posts/show/#{@comment.id}'
+    @comments = Comment.find(params[:comment_id])
+    @comments.destroy
+    redirect_to "/posts/show/#{@comments.post_id}"
   end
 end
